@@ -16,7 +16,7 @@ if response.status_code == 200:
 else:
     print("Failed to download the file. Status code:", response.status_code)
 
-local_file_dir = "/Videos"
+local_file_dir = "Videos"
 
 if not os.path.exists(local_file_dir):
     os.makedirs(local_file_dir)
