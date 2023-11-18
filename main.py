@@ -2,6 +2,8 @@ from random import random
 
 import numpy as np
 import os
+import shutil
+import os
 import cv2
 import zipfile
 import requests
@@ -64,5 +66,36 @@ for video_file in os.listdir(video_directory):
         video_capture.release()
 
 print("Random frame extraction complete.")
+# ---------------------------------------------------------------------
+
+
+
+# Assuming 'video_labels' is a list of lists with sleepiness labels
+video_labels = [
+    [3, 6, 7], [3, 7, 6], [2, 3, 4], [4, 8, 9],  # ... and so on for all 14 persons
+]
+
+image_directory = "/path/to/images"
+organized_directory = "/path/to/organized_images"
+
+# Create subdirectories for each sleepiness label
+for i in range(10):  # Assuming sleepiness labels range from 0 to 9
+    label_dir = os.path.join(organized_directory, str(i))
+    os.makedirs(label_dir, exist_ok=True)
+
+# Move the images to their respective label directories
+for filename in os.listdir(image_directory):
+    if filename.endswith(".jpg"):
+        # Extract person number and video set number
+        person, video_set = filename.split('-')[0], filename.split('-')[1].split('_')[0]
+        person, video_set = int(person), int(video_set)
+
+        # Use the extracted numbers to find the correct label
+        label = video_labels[person - 1][video_set - 1]
+
+        # Move the file to the correct directory
+        src = os.path.join(image_directory, filename)
+        dst = os.path.join(organized_directory, str(label), filename)
+        shutil.move(src, dst)
 
 
