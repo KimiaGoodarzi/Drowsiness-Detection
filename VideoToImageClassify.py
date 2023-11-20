@@ -8,7 +8,6 @@ import cv2
 import zipfile
 import requests
 import random
-#
 # from tensorflow import layers, models
 from sklearn.model_selection import train_test_split
 
@@ -40,8 +39,8 @@ if not os.path.exists(extracted_content_path):
 else:
     print("Content already extracted.")
 
-video_directory = "Videos/DROZY/videos_i8"  # Update this path
-image_directory = "Videos/VideotoImage"  # Update this path
+video_directory = "Videos/DROZY/videos_i8"
+image_directory = "Videos/VideotoImage"
 
 if not os.path.exists(image_directory):
     os.makedirs(image_directory)
@@ -72,23 +71,21 @@ print("Random frame extraction complete.")
 image_directory = "Videos/VideotoImage"
 organized_directory = "Videos/organized_images"
 
-# A list of lists with sleepiness labels
+# sleepiness labels
 video_labels = [
     [3, 6, 7], [3, 7, 6], [2, 3, 4], [4, 8, 9], [3, 7, 8], [2, 3, 7], [0, 4, 9], [2, 6, 8], [2, 6, 8],
     [3, 6, 7], [4, 7, 7], [2, 5, 6], [6, 3, 7], [5, 7, 8]
 ]
 
-# Define the full paths for the binary classification directories
 binary_class_directories = {
     "0_to_4": os.path.join(organized_directory, "0_to_4"),
     "5_to_9": os.path.join(organized_directory, "5_to_9")
 }
 
-# Create the binary classification directories
 for class_dir in binary_class_directories.values():
     os.makedirs(class_dir, exist_ok=True)
 
-# Move the images from the 10 labeled directories to the binary classification directories
+# from 10 labeled directories to the binary classification directories
 for label in range(10):
     label_dir = os.path.join(organized_directory, str(label))
     if os.path.exists(label_dir):
@@ -104,22 +101,19 @@ for label in range(10):
 
 organized_directory = "Videos/organized_images"
 
-# Prefixes for the 'not sleepy' class (0_to_4) and 'sleepy' class (5_to_9)
 not_sleepy_prefixes = ['1-1', '2-1', '3-1', '4-1', '5-1', '6-1', '7-2', '8-1', '10-1', '11-1', '12-1', '13-2']
 sleepy_prefixes = ['1-2', '2-2', '4-2', '5-2', '6-3', '7-3', '8-2', '9-2', '10-3', '11-2', '13-1', '14-1']
 
-# Create the test_dataset directory
 test_dataset_dir = os.path.join(organized_directory, "test_dataset")
 os.makedirs(test_dataset_dir, exist_ok=True)
 
 
-# Function to move random image with specified prefixes to test_dataset
 def move_random_image(prefixes, source_dir, destination_dir):
     selected_files = []
     for prefix in prefixes:
-        # List all files starting with the prefix
+
         matching_files = [f for f in os.listdir(source_dir) if f.startswith(prefix)]
-        # If there are matching files, randomly select one and move it
+
         if matching_files:
             selected_file = random.choice(matching_files)
             src_path = os.path.join(source_dir, selected_file)
@@ -130,10 +124,8 @@ def move_random_image(prefixes, source_dir, destination_dir):
     return selected_files
 
 
-# Move images from 0_to_4 to test_dataset
 move_random_image(not_sleepy_prefixes, binary_class_directories['0_to_4'], test_dataset_dir)
 
-# Move images from 5_to_9 to test_dataset
 move_random_image(sleepy_prefixes, binary_class_directories['5_to_9'], test_dataset_dir)
 
 # from PIL import Image
