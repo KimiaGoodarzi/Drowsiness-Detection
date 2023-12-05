@@ -8,7 +8,6 @@ import torch.nn.functional as F
 from data_preprocessing import get_data_loaders
 import os
 
-
 # CNN Model Definition
 class CNNmodel(nn.Module):
     def __init__(self):
@@ -69,3 +68,29 @@ with torch.no_grad():
         correct += (predicted == target).sum().item()
 
 print(f'Accuracy on the test set: {100 * correct / total}%')
+
+# Define the same transformations as used for the training/validation set
+preprocess = transforms.Compose([
+    transforms.Resize((64, 64)),
+    transforms.ToTensor(),
+    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+])
+test_dataset_dir = "Videos/organized_images/Combined_0_and_1_images/test_dataset"
+test_dataset = datasets.ImageFolder(root=test_dataset_dir, transform=preprocess)
+
+
+test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
+
+model.eval()
+correct = 0
+total = 0
+
+with torch.no_grad():
+    for data, target in test_loader:
+        output = model(data)
+        _, predicted = torch.max(output.data, 1)
+        total += target.size(0)
+        correct += (predicted == target).sum().item()
+
+test_accuracy = 100 * correct / total
+print(f'Accuracy on the test set: {test_accuracy:.2f}%')
